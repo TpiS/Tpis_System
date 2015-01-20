@@ -9,6 +9,15 @@ import struct
 import sys
 from pylab import *
 import matplotlib.pyplot as plt
+import random
+import codecs
+import pickle
+from sklearn import datasets
+import csv
+import os
+
+
+print["label","max","min","range","average","var","size"]
 
 
 
@@ -44,12 +53,14 @@ def feature(file,label):
 
 
 ##プリント##
-  ##  print("max: %s" % max(output)) ##
-  ##  print("min: %s" % min(output)) ##
-  ##  print("range: %s" % e)         ##
-  ##  print("average: %s" % b)       ##
-  ##  print("var: %s" % c)           ##
-  ##  print("size: %s" % d)          ##
+    """
+    print("max: %s" % max(output)) 
+    print("min: %s" % min(output)) 
+    print("range: %s" % e)         
+    print("average: %s" % b)       
+    print("var: %s" % c)           
+    print("size: %s" % d)          
+    """
 
     return [label,max(output),min(output),e,b,c,d]
 
@@ -96,13 +107,33 @@ law_files = ["/home/sugaya/Tpis_System/law_activation_level/20141212164350",
 "/home/sugaya/Tpis_System/law_activation_level/20141212164100"] 
 feature_table = []
 
+
+
 for file in high_files:
       
-#    print feature("",'high')
     print feature(file,'high')
+    
+    
+for file in law_files:
+
+    print feature(file,'law')
+
+
+
+
+FILE ='f0_data.csv'
+
+f = open(FILE,'wb')
+
+writecsv = csv.writer(f,lineterminator='\n')
+
+
+for file in high_files:
+    writecsv.writerow(feature(file,'high'))
+    f.close()
 
 
 for file in law_files:
+    writecsv.writerow(feature(file,'law'))
+    f.close()
 
-#    print feature("",'law')
-    print feature(file,'law') 
