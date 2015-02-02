@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 
 ##インポート##
@@ -126,14 +126,15 @@ FILE ='f0_data.csv'
 f = open(FILE,'wb')
 
 writecsv = csv.writer(f,lineterminator='\n')
-
+writecsv.writerow(["label","max","min","range","average","var","size"])
 
 for file in high_files:
     writecsv.writerow(feature(file,'high'))
-    f.close()
 
 
 for file in law_files:
     writecsv.writerow(feature(file,'law'))
-    f.close()
+
+
+f.close()
 
