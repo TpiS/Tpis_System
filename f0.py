@@ -107,34 +107,26 @@ law_files = ["/home/sugaya/Tpis_System/law_activation_level/20141212164350",
 "/home/sugaya/Tpis_System/law_activation_level/20141212164100"] 
 feature_table = []
 
-
+## Print ##
 
 for file in high_files:
-      
     print feature(file,'high')
     
-    
 for file in law_files:
-
     print feature(file,'law')
 
-
-
+## Dump ##
 
 FILE ='f0_data.csv'
 
 f = open(FILE,'wb')
 
 writecsv = csv.writer(f,lineterminator='\n')
-writecsv.writerow(["label","max","min","range","average","var","size"])
 
 for file in high_files:
     writecsv.writerow(feature(file,'high'))
 
-
 for file in law_files:
     writecsv.writerow(feature(file,'law'))
 
-
 f.close()
-
