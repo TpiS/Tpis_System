@@ -5,12 +5,8 @@
 ##インポート##                                                                                                                        
 import subprocess
 import numpy
-import numpy as np
 import struct
 import sys
-from pylab import *
-import matplotlib.pyplot as plt
-import random
 import codecs
 import pickle
 from sklearn import datasets
@@ -34,7 +30,7 @@ def feature(file,label):
 
 
 ##無音区間削除##
-    while '0.000000' in output: output.remove('0.000000')
+    while '0.0' in output: output.remove('0.000000')
 
 
 ##空要素削除##
@@ -52,7 +48,7 @@ def feature(file,label):
     d = a.size
     e = max(output)-min(output)
 
-
+   
     return [label,max(output),min(output),e,b,c,d]
 
 
@@ -234,14 +230,13 @@ feature_table = []
 
 
 
+
 for file in high_files:
     print feature(file,'high')
     
-   
+
 for file in law_files:
     print feature(file,'law')
-
-
 
 
 FILE ='f0_tadaima.csv'
@@ -260,4 +255,3 @@ for file in law_files:
 
 
 f.close()
-
