@@ -5,6 +5,7 @@
 ##インポート##
 import subprocess
 import numpy 
+import numpy as np
 import struct
 import sys
 from pylab import *
@@ -15,7 +16,7 @@ import pickle
 from sklearn import datasets
 import csv
 import os
-
+import math
 
 print["label","max","min","range","average","var","size"]
 
