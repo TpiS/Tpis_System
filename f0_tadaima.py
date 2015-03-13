@@ -30,7 +30,8 @@ def feature(file,label):
 
 
 ##無音区間削除##
-    while '0.0' in output: output.remove('0.000000')
+    while '0.0' in output: 
+        output.remove('0.000000')
 
 
 ##空要素削除##
