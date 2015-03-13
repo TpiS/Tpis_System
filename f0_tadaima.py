@@ -14,8 +14,9 @@ import csv
 import os
 import math
 
+"""
 print["label","max","min","range","average","var","size"]
-
+"""
 
 
 def print_features(file,label):
@@ -28,10 +29,7 @@ def print_features(file,label):
     output = map(float,output)
     
     ##無音区間削除##
-    """
-    while '0.0' in output: 
-        output.remove('0.000000')
-    """
+
     ##空要素削除##
     output = filter(lambda x:x!='',output)
     output = filter(lambda x:x != 0,output)
@@ -224,10 +222,10 @@ feature_table = []
 
 
 for file in high_files:
-    print_features(file,'high')
+    print_features(file,0)
     
 for file in law_files:
-    print_features(file,'law')
+    print_features(file,1)
 
 """
 FILE ='f0_tadaima.csv'
