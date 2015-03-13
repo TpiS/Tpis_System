@@ -18,41 +18,32 @@ print["label","max","min","range","average","var","size"]
 
 
 
-def feature(file,label):
-
-##f０抽出##
-
+def print_features(file,label):
+    ##f０抽出##
     output = subprocess.check_output(['get_f0s',file])
 
-
-##改行区切り##
+    ##改行区切り##
     output = output.splitlines()
-
-
-##無音区間削除##
+    ##float変換##
+    output = map(float,output)
+    
+    ##無音区間削除##
+    """
     while '0.0' in output: 
         output.remove('0.000000')
-
-
-##空要素削除##
+    """
+    ##空要素削除##
     output = filter(lambda x:x!='',output)
+    output = filter(lambda x:x != 0,output)
 
-
-##float変換##
-    output = map(float,output)
-
-
-##各指標計算##
-    a = numpy.array(output)
-    b = numpy.average(a)
-    c = numpy.var(a)
-    d = a.size
-    e = max(output)-min(output)
-
-   
-    return [label,max(output),min(output),e,b,c,d]
-
-
+    if(output != []):
+        ##各指標計算##
+        a = numpy.array(output)
+        b = numpy.average(a)
+        c = numpy.var(a)
+        d = a.size
+        e = max(output)-min(output)
+        print ",".join([str(label),str(max(output)),str(min(output)),str(e),str(b),str(c),str(d)])
 
 high_files = [
 "/home/sugaya/Tpis_System/tadaima_high/suzuki_high_20150128162010_5739c2d8-61a0-48fe-affb-a9a032520644",
@@ -233,13 +224,12 @@ feature_table = []
 
 
 for file in high_files:
-    print feature(file,'high')
+    print_features(file,'high')
     
-
 for file in law_files:
-    print feature(file,'law')
+    print_features(file,'law')
 
-
+"""
 FILE ='f0_tadaima.csv'
 
 f = open(FILE,'wb')
@@ -256,3 +246,5 @@ for file in law_files:
 
 
 f.close()
+"""
+
