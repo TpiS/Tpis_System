@@ -44,6 +44,7 @@ def feature(file):
 
     return [max(output),min(output),e,b,c,d]
 
+"""
 if __name__ == '__main__':
 
     ##print feature('/home/sugaya/Tpis_System/high_activation_level/20141212163944','high')
@@ -95,3 +96,4 @@ if __name__ == '__main__':
         
     for file in law_files:
         print ["0"]+feature(file)
+"""
