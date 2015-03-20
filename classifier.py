@@ -42,7 +42,7 @@ def classify(feature_list):
 
 def classify_by_file(filename):
     features = f0.feature(filename)
-    print features
+#    print features
     return classify(features)
 
 def sample_classify():
