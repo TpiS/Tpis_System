@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 from sklearn import datasets
 from sklearn import mixture
-import f0_tadaima
+import f0
 
 ###   ファイルの読み込み   ###
 data = np.genfromtxt('f0_tadaima.csv', delimiter=',')
