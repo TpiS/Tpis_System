@@ -205,6 +205,7 @@ el.send.addEventListener('click', function(){
     var oReq = new XMLHttpRequest();
     var url = "http://shower.human.waseda.ac.jp:9999/saveWav";
     oReq.open("POST", url, true);
+    oReq.setRequestHeader("Content-Type","audio/x-wav");
     oReq.onload = function (oEvent) {
     // Uploaded.
     };

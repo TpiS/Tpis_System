@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-
-from bottle import route, run, HTTPResponse, request, Bottle, response
+from bottle import route, run, HTTPResponse, request, Bottle, response, static_file
 import simplejson as json
 import datetime
 from StringIO import StringIO
@@ -38,19 +37,14 @@ def receiver():
             fh.write(str(request.body.read()))
     return "OK\r\n"
 
-@app.hook('after_request')
-def enable_cors():
-    """
-    You need to add some headers to each request.
-    Don't use the wildcard '*' for Access-Control-Allow-Origin in production.
-    """
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Methods'] = 'PUT, GET, POST, DELETE, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
+@app.route('/saveWavPage', method="GET")
+def saveWavPage():
+    return static_file("index.html",root="/home/fujikura/public_html/Tpis_System")
 
 @app.route('/saveWav', method=["OPTIONS","POST"])
 def saveWav():
     content_type = request.get_header('Content-Type')
+    print content_type
     dir = "/home/sw/wav/"
     tdatetime = datetime.datetime.now()
     tstr = tdatetime.strftime('%Y%m%d%H%M%S')
