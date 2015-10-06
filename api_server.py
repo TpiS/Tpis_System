@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from bottle import route, run, HTTPResponse, request
+from bottle import route, run, HTTPResponse, request, Bottle, response
 import simplejson as json
 import datetime
 from StringIO import StringIO
 import classifier as c
 
-@route('/receiver', method="POST")
+app = Bottle()
+@app.route('/receiver', method="POST")
 def receiver():
     content_type = request.get_header('Content-Type')
     if content_type  == 'audio/pcm' or content_type == "text/plain":
@@ -37,4 +38,28 @@ def receiver():
             fh.write(str(request.body.read()))
     return "OK\r\n"
 
-run(host='0.0.0.0', port=9999, debug=True, reloader=True)
+@app.hook('after_request')
+def enable_cors():
+    """
+    You need to add some headers to each request.
+    Don't use the wildcard '*' for Access-Control-Allow-Origin in production.
+    """
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'PUT, GET, POST, DELETE, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
+
+@app.route('/saveWav', method=["OPTIONS","POST"])
+def saveWav():
+    content_type = request.get_header('Content-Type')
+    dir = "/home/sw/wav/"
+    tdatetime = datetime.datetime.now()
+    tstr = tdatetime.strftime('%Y%m%d%H%M%S')
+    target_path = dir+tstr+".wav"
+    with open(target_path, mode = 'w') as fh:
+        fh.write(str(request.body.read()))
+        r = HTTPResponse(status=200, body="OK")
+        r.set_header('Content-Type', 'text/plain')
+        return r
+    print "saved "+target_path+" !!"
+
+run(app,host='0.0.0.0', port=9999, debug=True, reloader=True)

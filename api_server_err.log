@@ -1,0 +1,4 @@
+  File "api_server.py", line 46
+    target_path = dir+tstr+".wav"]
+                                 ^
+SyntaxError: invalid syntax

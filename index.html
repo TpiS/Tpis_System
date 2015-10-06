@@ -6,6 +6,7 @@
   <button class="rec">REC</button>
   <button class="stop" disabled="true">STOP</button>
   <button class="play" disabled="true">PLAY</button>
+  <button id="send" disabled="true">SEND</button>
   <a class="upload"></a>
   <a class="download"></a>
   </body>
@@ -24,164 +25,91 @@ window.AudioContext =
     window.AudioContext||
     window.webkitAudioContext;
 
-
-
-
    
     window.Recorder = function(audioContext, bufferSize){
     var o = this;
     o.audioContext = audioContext;
     o.bufferSize = bufferSize || 4096;
-    }
-    Recorder.prototype = {
-        audioContext : '',
-        bufferSize : '',
-        audioBufferArray : [],
-        stream : '',
-        recording : function(stream){
-            var o = this;
-            o.stream = stream;
-            var mediaStreamSource =
-                o.audioContext.createMediaStreamSource(stream);
-            var scriptProcessor =
-                o.audioContext.createScriptProcessor(o.bufferSize, 1, 1);
-            mediaStreamSource.connect(scriptProcessor);
-            o.audioBufferArray = [];
-            scriptProcessor.onaudioprocess = function(event){
-                var channel = event.inputBuffer.getChannelData(0);
-                var buffer = new Float32Array(o.bufferSize);
-                for (var i = 0; i < o.bufferSize; i++) {
-                    buffer[i] = channel[i];
+}
+Recorder.prototype = {
+    audioContext : '',
+    bufferSize : '',
+    audioBufferArray : [],
+    stream : '',
+    recording : function(stream){
+        var o = this;
+        o.stream = stream;
+        var mediaStreamSource =
+            o.audioContext.createMediaStreamSource(stream);
+        var scriptProcessor =
+            o.audioContext.createScriptProcessor(o.bufferSize, 1, 1);
+        mediaStreamSource.connect(scriptProcessor);
+        o.audioBufferArray = [];
+        scriptProcessor.onaudioprocess = function(event){
+            var channel = event.inputBuffer.getChannelData(0);
+            var buffer = new Float32Array(o.bufferSize);
+            for (var i = 0; i < o.bufferSize; i++) {
+                buffer[i] = channel[i];
+            }
+            o.audioBufferArray.push(buffer);
+        }
+        //この接続でonaudioprocessが起動
+        scriptProcessor.connect(o.audioContext.destination);
+        o.scriptProcessor = scriptProcessor;
+    },
+    recStart : function(){
+        var o = this;
+        if(o.stream){
+            o.recording(o.stream);
+        }else{
+            navigator.getUserMedia(
+                {video: false, audio: true},
+                function(stream){o.recording(stream)},
+                function(err){
+                    console.log(err.name ? err.name : err);
                 }
-                o.audioBufferArray.push(buffer);
-            }
-            //この接続でonaudioprocessが起動
-            scriptProcessor.connect(o.audioContext.destination);
-            o.scriptProcessor = scriptProcessor;
-        },
-        recStart : function(){
-            var o = this;
-            if(o.stream){
-                o.recording(o.stream);
-            }
-            else{
-                navigator.getUserMedia(
-                    {video: false, audio: true},
-                    function(stream){o.recording(stream)},
-                    function(err){
-                        console.log(err.name ? err.name : err);
-                    }
-                );
-            }
-        },
-        recStop : function(){
-            var o = this;
-            o.scriptProcessor.disconnect();
-            if(o.stream){
-                o.stream.stop();
-                o.stream = null;
-            }
-        },
-        getAudioBufferArray : function(){
-            var o = this;
-            return o.audioBufferArray
-        },
-        getAudioBuffer : function(){
-            var o = this;
-            var buffer = o.audioContext.createBuffer(
-                1,
-                o.audioBufferArray.length * o.bufferSize,
-                o.audioContext.sampleRate
             );
-            var channel = buffer.getChannelData(0);
-            for (var i = 0; i < o.audioBufferArray.length; i++) {
-                for (var j = 0; j < o.bufferSize; j++) {
-                    channel[i * o.bufferSize + j] = o.audioBufferArray[i][j];
-                }
-            }
-            return buffer;
-        }    
-    }
-
-
-    
-    window.exportWAV = function(audioData, sampleRate) {
-    var encodeWAV = function(samples, sampleRate) {
-        var buffer = new ArrayBuffer(44 + samples.length * 2);
-        var view = new DataView(buffer);
-        var writeString = function(view, offset, string) {
-            for (var i = 0; i < string.length; i++){
-                view.setUint8(offset + i, string.charCodeAt(i));
-            }
-        };
-        var floatTo16BitPCM = function(output, offset, input) {
-            for (var i = 0; i < input.length; i++, offset += 2){
-                var s = Math.max(-1, Math.min(1, input[i]));
-                output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
-            }
-        };
-        writeString(view, 0, 'RIFF');  // RIFFヘッダ
-        view.setUint32(4, 32 + samples.length * 2, true); // これ以降のファイルサイズ
-        writeString(view, 8, 'WAVE'); // WAVEヘッダ
-        writeString(view, 12, 'fmt '); // fmtチャンク
-        view.setUint32(16, 16, true); // fmtチャンクのバイト数
-        view.setUint16(20, 1, true); // フォーマットID
-        view.setUint16(22, 1, true); // チャンネル数
-        view.setUint32(24, sampleRate, true); // サンプリングレート
-        view.setUint32(28, sampleRate * 2, true); // データ速度
-        view.setUint16(32, 2, true); // ブロックサイズ
-        view.setUint16(34, 16, true); // サンプルあたりのビット数
-        writeString(view, 36, 'data'); // dataチャンク
-        view.setUint32(40, samples.length * 2, true); // 波形データのバイト数
-        floatTo16BitPCM(view, 44, samples); // 波形データ
-        return view;
-    };
-    var mergeBuffers = function(audioData) {
-        var sampleLength = 0;
-        for (var i = 0; i < audioData.length; i++) {
-          sampleLength += audioData[i].length;
         }
-        var samples = new Float32Array(sampleLength);
-        var sampleIdx = 0;
-        for (var i = 0; i < audioData.length; i++) {
-          for (var j = 0; j < audioData[i].length; j++) {
-            samples[sampleIdx] = audioData[i][j];
-            sampleIdx++;
-          }
+    },
+    recStop : function(){
+        var o = this;
+        o.scriptProcessor.disconnect();
+        if(o.stream){
+            o.stream.stop();
+            o.stream = null;
         }
-        return samples;
-    };
-    var dataview = encodeWAV(mergeBuffers(audioData), sampleRate);
-    var audioBlob = new Blob([dataview], { type: 'audio/wav' });
-    return audioBlob;
-
-    <!--
-    var oReq = new XMLHttpRequest();
-    var url = "http://shower.human.waseda.ac.jp:9998/receiver?username=sugaya";
-    oReq.open("POST", url, true);
-    oReq.onload = function (oEvent) {
-      // Uploaded.
-    };
-
-    var dataview = encodeWAV(mergeBuffers(audioData), sampleRate);
-    var audioBlob = new Blob([dataview], { type: 'audio/wav' });
-
-    oReq.send(audioBlob);
-    -->
-
-
-};
-
-
+    },
+    getAudioBufferArray : function(){
+        var o = this;
+        return o.audioBufferArray
+    },
+    getAudioBuffer : function(){
+        var o = this;
+        var buffer = o.audioContext.createBuffer(
+            1,
+            o.audioBufferArray.length * o.bufferSize,
+            o.audioContext.sampleRate
+        );
+        var channel = buffer.getChannelData(0);
+        for (var i = 0; i < o.audioBufferArray.length; i++) {
+	    for (var j = 0; j < o.bufferSize; j++) {
+                channel[i * o.bufferSize + j] = o.audioBufferArray[i][j];
+            }
+        }
+        return buffer;
+    }    
+}
 
 var audioContext = new AudioContext();
 var recorder = new Recorder(audioContext);
+
 var el = {
     rec : document.querySelector('.rec'),
     stop : document.querySelector('.stop'),
     play : document.querySelector('.play'),
     upload : document.querySelector('.upload'),
-    download : document.querySelector('.download')
+    download : document.querySelector('.download'),
+    send : document.querySelector('#send')
 }
 var disabled = function(el, bool){
     el.classList[bool ? 'add' : 'remove']('disabled');
@@ -192,33 +120,25 @@ el.rec.addEventListener('click', function(){
     disabled(el.rec, true);
     disabled(el.stop, false);
     disabled(el.play, true);
+
 });
 el.stop.addEventListener('click', function(){
     recorder.recStop();
     disabled(el.rec, false);
     disabled(el.stop, true);
     disabled(el.play, false);
-
+    disabled(el.send, false);
 
     //upload link
     var oReq = new XMLHttpRequest();
-    var url = "http://shower.human.waseda.ac.jp:9998/receiver?username=sugaya";
+    //var url = "http://shower.human.waseda.ac.jp:9998/receiver?username=sugaya";
+    var url = "http://shower.human.waseda.ac.jp/Tpis_System/save";
     oReq.open("POST", url, true);
     oReq.onload = function (oEvent) {
       // Uploaded.
     };
-    var dataview = encodeWAV(mergeBuffers(audioData), sampleRate);
-    var audioBlob = new Blob([dataview], { type: 'audio/wav' });
-    oReq.send(audioBlob);
-
-
-    //download link
-    var blob = exportWAV(recorder.getAudioBufferArray(), audioContext.sampleRate)
-    var url = URL.createObjectURL(blob);
-    el.download.href = url;
-    el.download.textContent = 'download'
-    el.download.download = 'output.wav';
 });
+
 el.play.addEventListener('click', function(){
     //play
     var src = audioContext.createBufferSource();
@@ -226,8 +146,73 @@ el.play.addEventListener('click', function(){
     src.connect(audioContext.destination);
     src.start()
 });
- 
 
+
+var encodeWAV = function(samples, sampleRate) {
+    var buffer = new ArrayBuffer(44 + samples.length * 2);
+    var view = new DataView(buffer);
+    var writeString = function(view, offset, string) {
+        for (var i = 0; i < string.length; i++){
+            view.setUint8(offset + i, string.charCodeAt(i));
+        }
+    };
+    var floatTo16BitPCM = function(output, offset, input) {
+	for (var i = 0; i < input.length; i++, offset += 2){
+	    var s = Math.max(-1, Math.min(1, input[i]));
+	    output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+        }
+    };
+    writeString(view, 0, 'RIFF');  // RIFFヘッダ
+    view.setUint32(4, 32 + samples.length * 2, true); // これ以降のファイルサイズ
+    writeString(view, 8, 'WAVE'); // WAVEヘッダ
+    writeString(view, 12, 'fmt '); // fmtチャンク
+    view.setUint32(16, 16, true); // fmtチャンクのバイト数
+    view.setUint16(20, 1, true); // フォーマットID
+    view.setUint16(22, 1, true); // チャンネル数
+    view.setUint32(24, sampleRate, true); // サンプリングレート
+    view.setUint32(28, sampleRate * 2, true); // データ速度
+    view.setUint16(32, 2, true); // ブロックサイズ
+    view.setUint16(34, 16, true); // サンプルあたりのビット数
+    writeString(view, 36, 'data'); // dataチャンク
+    view.setUint32(40, samples.length * 2, true); // 波形データのバイト数
+    floatTo16BitPCM(view, 44, samples); // 波形データ
+    return view;
+};
+
+var mergeBuffers = function(audioData) {
+    var sampleLength = 0;
+    for (var i = 0; i < audioData.length; i++) {
+        sampleLength += audioData[i].length;
+    }
+    var samples = new Float32Array(sampleLength);
+    var sampleIdx = 0;
+    for (var i = 0; i < audioData.length; i++) {
+        for (var j = 0; j < audioData[i].length; j++) {
+            samples[sampleIdx] = audioData[i][j];
+            sampleIdx++;
+        }
+    }
+    return samples;
+};
+
+el.send.addEventListener('click', function(){
+    //send
+    var src = audioContext.createBufferSource();
+    src.buffer = recorder.getAudioBuffer();
+    src.connect(audioContext.destination);
+    //src.start()
+    //upload link
+    var oReq = new XMLHttpRequest();
+    var url = "http://shower.human.waseda.ac.jp:9999/saveWav";
+    oReq.open("POST", url, true);
+    oReq.onload = function (oEvent) {
+    // Uploaded.
+    };
+    var dataview = encodeWAV(mergeBuffers(recorder.getAudioBufferArray()), 44100);
+    var audioBlob = new Blob([dataview], { type: 'audio/wav' });
+    oReq.send(audioBlob);
+    console.log("WAV was sent to "+url+" !!");
+});
 
   </script>
 </html>
