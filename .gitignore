@@ -2,3 +2,4 @@
 high_activation_level/
 law_activation_level/
 *~
+*.pyc

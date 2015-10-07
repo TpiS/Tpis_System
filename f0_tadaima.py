@@ -220,14 +220,14 @@ feature_table = []
 
 
 
-
+"""
 for file in high_files:
     print_features(file,0)
     
 for file in law_files:
     print_features(file,1)
 
-"""
+
 FILE ='f0_tadaima.csv'
 
 f = open(FILE,'wb')

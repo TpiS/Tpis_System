@@ -17,12 +17,12 @@ low_data  = np.array(filter(lambda x: int(x[0]) == 1,data))
 
 
 ###   活性度が高いモデル   ###
-high_model = mixture.GMM(n_components=5, covariance_type='full')
+high_model = mixture.GMM(n_components=2, covariance_type='full')
 high_model.fit(high_data[:,1:])
 
 
 ###   活性度が低いモデル   ###
-low_model = mixture.GMM(n_components=5, covariance_type='full')
+low_model = mixture.GMM(n_components=2, covariance_type='full')
 low_model.fit(low_data[:,1:])
 
 
@@ -39,12 +39,12 @@ low_sugaya = np.array(filter(lambda x: int(x[0]) == 1,data2))
 
 
 ###　活性度が高いモデル(個人)　###                                                                       
-high_model_sugaya = mixture.GMM(n_components=5, covariance_type='full')
+high_model_sugaya = mixture.GMM(n_components=2, covariance_type='full')
 high_model_sugaya.fit(high_sugaya[:,1:])
 
 
 ###   活性度が低いモデル(個人)   ### 
-low_model_sugaya = mixture.GMM(n_components=5, covariance_type='full')
+low_model_sugaya = mixture.GMM(n_components=2, covariance_type='full')
 low_model_sugaya.fit(low_sugaya[:,1:])
 
 
@@ -97,8 +97,6 @@ def classify_sugaya(feature_list):
         return {"result" : "same",
                 "high-score" : high_sugaya_score,
                 "low_score"  : low_sugaya_score}
-
-
 
 def classify_by_file_sugaya(filename):
     features2 = sugaya_tadaima.feature(filename)
