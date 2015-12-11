@@ -1,16 +1,159 @@
 <html>
   <head>
-    <link href="./style.css" rel="stylesheet" type="text/css">
+    <meta charset="utf-8">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <style type="text/css">
+
+        header {
+            background: #008080;
+            color: #FFF;
+        }
+      
+        header h1 {
+            font-size: 28px;
+            padding: 10px;
+            text-align: center;
+        }
+      
+
+      
+        input.form-control{
+	    font-size: 1.4em;
+            font-weight: bold;
+            padding: 10px 30px;
+	}
+<!--      
+	botton#post{
+	    font-size: 1.4em;
+            font-weight: bold;
+            padding: 10px 30px;
+	}
+-->
+
+        button.rec{
+            font-size: 1.4em;
+            font-weight: bold;
+            padding: 10px 30px;
+            background-color: #248;
+            color: #fff;
+            border-style: none;
+        }
+
+        button.stop{
+            font-size: 1.4em;
+            font-weight: bold;
+            padding: 10px 30px;
+            background-color: #248;
+            color: #fff;
+            border-style: none;
+        }
+
+        button.play{
+            font-size: 1.4em;
+            font-weight: bold;
+            padding: 10px 30px;
+            background-color: #248;
+            color: #fff;
+            border-style: none;
+        }
+
+	button#send{
+	    font-size: 1.4em;
+	    font-weight: bold;
+            padding: 10px 30px;
+            background-color: #248;
+            color: #fff;
+            border-style: none;
+	}
+
+
+	button#button{
+            font-size: 0.8em;
+            font-weight: bold;
+            padding: 10px 30px;
+            background-color: #ffcc00;
+            color: #fff;
+            border-style: none;
+        }
+
+    </style>
+    <title>音声対話実験</title>
   </head>
   <body>
-  <button class="rec">REC</button>
-  <button class="stop" disabled="true">STOP</button>
-  <button class="play" disabled="true">PLAY</button>
-  <button id="send" disabled="true">SEND</button>
-  <a class="upload"></a>
-  <a class="download"></a>
+    <header>
+      <h1>音声対話実験</h1>
+    </header>
+      <h3>
+        <input class="form-control" type="text" id="subject-name" name="subject-name" placeholder="実験者番号を入力して下さい" style="text-align:center;" type="text">
+      </h3>
+    <br>
+    <br>
+ 
+	<button class="rec">REC</button>
+	<button class="stop" disabled="true">STOP</button>
+	<button class="play" disabled="true">PLAY</button>
+	<button id="send" disabled="true">SEND</button>
+ 
+    <br>
+    <br>
+
+      <div class="yes-no">
+	<input type="radio" id="value1" name="yes-no" value="1">はい
+	<input type="radio" id="value1" name="yes-no" value="0">いいえ
+      </div>
+  <br>
+  <br>
+
+      <div class="activation-level">
+	<input type="radio" id="value2" name="activation-level" value="1">かなり元気がない
+	<input type="radio" id="value2" name="activation-level" value="2">ちょっと元気がない
+	<input type="radio" id="value2" name="activation-level" value="3">どちらでもない
+	<input type="radio" id="value2" name="activation-level" value="4">ちょっと元気がある
+	<input type="radio" id="value2" name="activation-level" value="5">かなり元気がある
+      </div>
+
+　<br>
+  <br>
+       <p><button id="button" type="button">送信</button></p>
   </body>
+
+
   <script type="text/javascript">
+
+$(function(){
+    $("#button").click( function(){
+            var JSONdata = {
+                value0: $("#subject-name").val(),
+                value1: $("#value1").val(),
+                value2: $("#value2").val()
+            };
+
+        alert(JSON.stringify(JSONdata));
+
+        $.ajax({
+            type : 'post',
+            url : "http://shower.human.waseda.ac.jp:9990/subfomation",
+            data : JSON.stringify(JSONdata),
+            contenttype : 'application/JSON',
+            datatype : 'json',
+            scripttharset : 'utf-8',
+            success : function(data){
+
+                // Succeess
+                alert("success");
+                alert(JSON.stringify(data));
+            },
+            error : function(data) {
+
+                //Error
+                alert("error");
+                alert(JSON.stringify(data));
+            }
+        });
+    })
+})
+
+
 navigator.getUserMedia = 
     navigator.getUserMedia ||
     navigator.webkitGetUserMedia ||
@@ -107,8 +250,6 @@ var el = {
     rec : document.querySelector('.rec'),
     stop : document.querySelector('.stop'),
     play : document.querySelector('.play'),
-    upload : document.querySelector('.upload'),
-    download : document.querySelector('.download'),
     send : document.querySelector('#send')
 }
 var disabled = function(el, bool){
@@ -120,7 +261,7 @@ el.rec.addEventListener('click', function(){
     disabled(el.rec, true);
     disabled(el.stop, false);
     disabled(el.play, true);
-
+　　console.log('record!!!');
 });
 el.stop.addEventListener('click', function(){
     recorder.recStop();
@@ -128,15 +269,16 @@ el.stop.addEventListener('click', function(){
     disabled(el.stop, true);
     disabled(el.play, false);
     disabled(el.send, false);
-
+<!--
     //upload link
     var oReq = new XMLHttpRequest();
     //var url = "http://shower.human.waseda.ac.jp:9998/receiver?username=sugaya";
     var url = "http://shower.human.waseda.ac.jp/Tpis_System/save";
     oReq.open("POST", url, true);
     oReq.onload = function (oEvent) {
-      // Uploaded.
-    };
+      // Uploaded. 
+    }; 
+-->
 });
 
 el.play.addEventListener('click', function(){
@@ -203,7 +345,7 @@ el.send.addEventListener('click', function(){
     //src.start()
     //upload link
     var oReq = new XMLHttpRequest();
-    var url = "http://shower.human.waseda.ac.jp:9999/saveWav";
+    var url = "http://shower.human.waseda.ac.jp:9990/saveWav";
     oReq.open("POST", url, true);
     oReq.setRequestHeader("Content-Type","audio/x-wav");
     oReq.onload = function (oEvent) {
@@ -214,6 +356,7 @@ el.send.addEventListener('click', function(){
     oReq.send(audioBlob);
     console.log("WAV was sent to "+url+" !!");
 });
+
 
   </script>
 </html>
