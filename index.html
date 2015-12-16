@@ -2,6 +2,7 @@
   <head>
     <meta charset="utf-8">
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <style type="text/css">
 
         header {
@@ -84,7 +85,7 @@
       <h1>音声対話実験</h1>
     </header>
       <h3>
-        <input class="form-control" type="text" id="subject-name" name="subject-name" placeholder="実験者番号を入力して下さい" style="text-align:center;" type="text">
+        <input class="form-control" type="text" id="subject-id" name="subject-id" placeholder="実験者番号を入力して下さい" style="text-align:center;" type="text">
       </h3>
     <br>
     <br>
@@ -92,24 +93,24 @@
 	<button class="rec">REC</button>
 	<button class="stop" disabled="true">STOP</button>
 	<button class="play" disabled="true">PLAY</button>
-	<button id="send" disabled="true">SEND</button>
+	<a onClick="sound()"><button id="send" disabled="true">SEND</button></a>
  
     <br>
     <br>
 
       <div class="yes-no">
-	<input type="radio" id="value1" name="yes-no" value="1">はい
-	<input type="radio" id="value1" name="yes-no" value="0">いいえ
+	<input type="radio" name="yes-no" value="1">はい
+	<input type="radio" name="yes-no" value="0">いいえ
       </div>
   <br>
   <br>
 
       <div class="activation-level">
-	<input type="radio" id="value2" name="activation-level" value="1">かなり元気がない
-	<input type="radio" id="value2" name="activation-level" value="2">ちょっと元気がない
-	<input type="radio" id="value2" name="activation-level" value="3">どちらでもない
-	<input type="radio" id="value2" name="activation-level" value="4">ちょっと元気がある
-	<input type="radio" id="value2" name="activation-level" value="5">かなり元気がある
+	<input type="radio" name="activation-level" value="1">かなり元気がない
+	<input type="radio" name="activation-level" value="2">ちょっと元気がない
+	<input type="radio" name="activation-level" value="3">どちらでもない
+	<input type="radio" name="activation-level" value="4">ちょっと元気がある
+	<input type="radio" name="activation-level" value="5">かなり元気がある
       </div>
 
 　<br>
@@ -120,12 +121,45 @@
 
   <script type="text/javascript">
 
+
+
+jQuery(function($) {
+    xhr = new XMLHttpRequest();
+    xhr.open('POST', 'https://api.apigw.smt.docomo.ne.jp/voiceText/v1/textToSpeech?APIKEY=5752674b416c785153724e364f564d697a73\
+64715a31366e4c694d4b6a5379306c33357a30556a4f466131', true);
+
+    xhr.responseType = 'arraybuffer'
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
+    var datax = "text=ちょっと元気がありませんね 当たってますか&speaker=hikari&emotion=happiness&emotion_level=2&format=ogg";
+
+    xhr.onload = function (e) {
+        if( this.status == 200){
+            view = new Uint8Array(this.response);
+            blob = new Blob([view], { "type" : "audio/wav" });
+            URL = window.URL || window.webkitURL;
+
+            audio = new Audio(URL.createObjectURL(blob));
+            //audio.play();
+        }
+    };
+    data = datax;
+    xhr.send(data);
+});
+
+function sound(){
+alert("start");
+            audio.play();
+}
+
+
+
+
 $(function(){
     $("#button").click( function(){
             var JSONdata = {
-                value0: $("#subject-name").val(),
-                value1: $("#value1").val(),
-                value2: $("#value2").val()
+                subjectId: $("#subject-id").val(),
+                YesNo: $("input[name='yes-no']:checked").val(),
+                activationLevel: $("input[name='activation-level']:checked").val()
             };
 
         alert(JSON.stringify(JSONdata));
