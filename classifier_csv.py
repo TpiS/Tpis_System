@@ -27,15 +27,15 @@ grade1_model.fit(grade1[:,1:])
 grade2_model = mixture.GMM(n_components=5, covariance_type='full')
 grade2_model.fit(grade2[:,1:])
 
-###   活性度3モデル   ###                                                                                                                   
+###   活性度3モデル   ###                                                                                                    
 grade3_model = mixture.GMM(n_components=5, covariance_type='full')
 grade3_model.fit(grade3[:,1:])
 
-###   活性度4モデル   ###                                                                                                                   
+###   活性度4モデル   ###                                                                                                     
 grade4_model = mixture.GMM(n_components=5, covariance_type='full')
 grade4_model.fit(grade4[:,1:])
 
-###   活性度5モデル   ###                                                                                                                   
+###   活性度5モデル   ###                                                                                                    
 grade5_model = mixture.GMM(n_components=5, covariance_type='full')
 grade5_model.fit(grade5[:,1:])
 
@@ -43,20 +43,24 @@ grade5_model.fit(grade5[:,1:])
 
 ### 分類 ###
 def classify(feature_list):
+    print "aaa"
     grade1_score = grade1_model.score([feature_list])[0]
     grade2_score = grade2_model.score([feature_list])[0]
     grade3_score = grade3_model.score([feature_list])[0]
     grade4_score = grade4_model.score([feature_list])[0]
     grade5_score = grade5_model.score([feature_list])[0]
 
+    print "bbb"
+    
     grade_score[grade1_score,grade_score,grade3_score,grade4_score,grade5_score]
     max(grade_score)
     for i in range(len(grade_score)):
             if grade_score[i] == max(grade_score):
                 print i
+    
+    print "ccc"
 
-
-"""
+    """
     if grade5_score >= grade4_score:
         return {"result" : "grade5",
                 "score" : grade5_score}
@@ -72,14 +76,15 @@ def classify(feature_list):
     elif grade1_score < grade2_score:
         return {"result" : "grade1",
                 "score" : grade1_score}
-"""
+    """
 
 
 def classify_by_file(filename):
     features = general_model.print_features(filename)
-    print features
+    #print features
+    print "ddd"
     return classify(features)
-
+    print "eee"
 
 def sample_classify():
     return classify([1,2,3,4,5,6])

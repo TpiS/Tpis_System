@@ -64,18 +64,20 @@ def saveWav():
         fh.write(str(request.body.read()))
         r = HTTPResponse(status=200, body="OK")
         r.set_header('Content-Type', 'text/plain')
-        return r
+        
     print "saved "+target_path+" !!"
-
-    #活性度推定                                                                                                            
+    
+    #活性度推定
     result = cc.classify_by_file(target_path)
     body = json.dumps(result)
     rr = HTTPResponse(status=200, body=body)
     rr.set_header('Content-Type', 'application/json')
-    return rr
     
+    return jsondumps(rr)
+    return json.dumps("今")
+        
     return "OK\r\n"
-
+    
 
 @app.route('/subfomation', method=["OPTIONS","POST"])
 def subfomation():

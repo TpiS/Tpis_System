@@ -135,7 +135,7 @@ jQuery(function($) {
     xhr.onload = function (e) {
         if( this.status == 200){
             view = new Uint8Array(this.response);
-            blob = new Blob([view], { "type" : "audio/wav" });
+            blob = new Blob([view], { "type" : "audio/x-wav" });
             URL = window.URL || window.webkitURL;
 
             audio = new Audio(URL.createObjectURL(blob));
@@ -147,8 +147,8 @@ jQuery(function($) {
 });
 
 function sound(){
-alert("start");
-            audio.play();
+    alert("start");
+    audio.play();
 }
 
 
@@ -314,6 +314,7 @@ el.stop.addEventListener('click', function(){
     }; 
 -->
 });
+  
 
 el.play.addEventListener('click', function(){
     //play
@@ -380,7 +381,7 @@ el.send.addEventListener('click', function(){
     //upload link
     var oReq = new XMLHttpRequest();
     var url = "http://shower.human.waseda.ac.jp:9990/saveWav";
-    oReq.open("POST", url, true);
+    oReq.open("POST", url, false);
     oReq.setRequestHeader("Content-Type","audio/x-wav");
     oReq.onload = function (oEvent) {
     // Uploaded.
@@ -389,8 +390,28 @@ el.send.addEventListener('click', function(){
     var audioBlob = new Blob([dataview], { type: 'audio/wav' });
     oReq.send(audioBlob);
     console.log("WAV was sent to "+url+" !!");
+    console.log(JSON.parse(oReq.responseText));
+    // get 活性度
+<!--
+    $.getJSON("http://shower.human.waseda.ac.jp:9990/saveWav", function(){
+    });
+-->
+<!--
+    var xmlHttpRequest = new XMLHttpRequest();
+    xmlHttpRequest.onreadystatechange = function(){
+        if( this.readyState == 4 && this.status == 200 )
+            if( this.response ){
+                console.log(this.response)
+        }
+    }
+    xmlHttpRequest.open( 'GET', 'http://shower.human.waseda.ac.jp:9990/saveWav', true );
+    xmlHttpRequest.responseType = 'json';
+    xmlHttpRequest.send( null );
+-->
+    console.log("活性度!");
 });
 
 
   </script>
 </html>
+
