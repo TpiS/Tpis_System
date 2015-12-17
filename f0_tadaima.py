@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 
-##インポート##                                                                                                                        
+##インポート##                                                                                                                
+
 import subprocess
 import numpy
 import struct
