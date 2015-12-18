@@ -51,8 +51,8 @@ def classify(feature_list):
     grade5_score = grade5_model.score([feature_list])[0]
 
     print "bbb"
-    
-    grade_score[grade1_score,grade_score,grade3_score,grade4_score,grade5_score]
+    grade_score=[]
+    grade_score=[grade1_score,grade2_score,grade3_score,grade4_score,grade5_score]
     max(grade_score)
     for i in range(len(grade_score)):
             if grade_score[i] == max(grade_score):
@@ -84,7 +84,7 @@ def classify_by_file(filename):
     #print features
     print "ddd"
     return classify(features)
-    print "eee"
+
 
 def sample_classify():
     return classify([1,2,3,4,5,6])

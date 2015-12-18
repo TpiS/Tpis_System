@@ -42,9 +42,11 @@ def print_features(file):
         d = a.size
         e = max(output)-min(output)
         print ",".join([str(max(output)),str(min(output)),str(e),str(b),str(c),str(d)])
+    return [max(output),min(output),e,b,c,d]
 
 #print ["label","max","min","range","average","var","size"]
 
+"""
 files = [
 "/home/sugaya/public_html/wav/20151013223903.wav",
 "/home/sugaya/public_html/wav/20151013223913.wav",
@@ -288,7 +290,7 @@ files = [
 "/home/sugaya/public_html/wav/20151020234132.wav"]
  
 feature_table = []
-
+"""
 
 
 """

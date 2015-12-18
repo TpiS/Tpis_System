@@ -73,7 +73,6 @@ def saveWav():
     rr = HTTPResponse(status=200, body=body)
     rr.set_header('Content-Type', 'application/json')
     
-    return jsondumps(rr)
     return json.dumps("今")
         
     return "OK\r\n"
