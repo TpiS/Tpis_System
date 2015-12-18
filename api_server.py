@@ -15,7 +15,7 @@ app = Bottle()
 def receiver():
     content_type = request.get_header('Content-Type')
     if content_type  == 'audio/pcm' or content_type == "text/plain":
-#        print request.body.read()
+        #print request.body.read()
         pass
     else:
         return "Bad Content-Type"
@@ -50,7 +50,6 @@ def saveWavPage():
     return static_file("index.html",root="/home/sugaya/public_html/Tpis_System")
 
 
-
 @app.route('/saveWav', method=["OPTIONS","POST"])
 def saveWav():
     #録音音声をSEND
@@ -72,25 +71,22 @@ def saveWav():
     body = json.dumps(result)
     rr = HTTPResponse(status=200, body=body)
     rr.set_header('Content-Type', 'application/json')
-    
     return json.dumps("今")
-        
     return "OK\r\n"
     
 
 @app.route('/subfomation', method=["OPTIONS","POST"])
 def subfomation():
     print("subfomation")
-
+    #JSONデータ取得
     json_data = json.loads(str(request.body.read()))
     print json_data
-
+    #MongoDBにインサート
     con = pymongo.MongoClient()
     coll = con.test1.user
-
     coll.insert_one(json_data)
     """
     for doc in coll.find():
         print(doc)
     """
-run(app,host='0.0.0.0', port=9990, debug=True, reloader=True)
+run(app,host='0.0.0.0', port=9989, debug=True, reloader=True)

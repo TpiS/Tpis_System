@@ -4,19 +4,15 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <style type="text/css">
-
         header {
             background: #008080;
             color: #FFF;
         }
-      
         header h1 {
             font-size: 28px;
             padding: 10px;
             text-align: center;
         }
-      
-
       
         input.form-control{
 	    font-size: 1.4em;
@@ -30,7 +26,6 @@
             padding: 10px 30px;
 	}
 -->
-
         button.rec{
             font-size: 1.4em;
             font-weight: bold;
@@ -39,7 +34,6 @@
             color: #fff;
             border-style: none;
         }
-
         button.stop{
             font-size: 1.4em;
             font-weight: bold;
@@ -48,7 +42,6 @@
             color: #fff;
             border-style: none;
         }
-
         button.play{
             font-size: 1.4em;
             font-weight: bold;
@@ -57,7 +50,6 @@
             color: #fff;
             border-style: none;
         }
-
 	button#send{
 	    font-size: 1.4em;
 	    font-weight: bold;
@@ -66,8 +58,6 @@
             color: #fff;
             border-style: none;
 	}
-
-
 	button#button{
             font-size: 0.8em;
             font-weight: bold;
@@ -76,7 +66,6 @@
             color: #fff;
             border-style: none;
         }
-
     </style>
     <title>音声対話実験</title>
   </head>
@@ -89,49 +78,37 @@
       </h3>
     <br>
     <br>
- 
 	<button class="rec">REC</button>
 	<button class="stop" disabled="true">STOP</button>
 	<button class="play" disabled="true">PLAY</button>
 	<a onClick="sound()"><button id="send" disabled="true">SEND</button></a>
- 
     <br>
     <br>
-
       <div class="yes-no">
 	<input type="radio" name="yes-no" value="1">はい
 	<input type="radio" name="yes-no" value="0">いいえ
       </div>
   <br>
   <br>
-
       <div class="activation-level">
-	<input type="radio" name="activation-level" value="1">かなり元気がない
-	<input type="radio" name="activation-level" value="2">ちょっと元気がない
-	<input type="radio" name="activation-level" value="3">どちらでもない
-	<input type="radio" name="activation-level" value="4">ちょっと元気がある
-	<input type="radio" name="activation-level" value="5">かなり元気がある
+	<input type="radio" name="activation-level" value="0">かなり元気がない
+	<input type="radio" name="activation-level" value="1">ちょっと元気がない
+	<input type="radio" name="activation-level" value="2">どちらでもない
+	<input type="radio" name="activation-level" value="3">ちょっと元気がある
+	<input type="radio" name="activation-level" value="4">かなり元気がある
       </div>
-
 　<br>
   <br>
        <p><button id="button" type="button">送信</button></p>
   </body>
-
-
   <script type="text/javascript">
-
-
 
 jQuery(function($) {
     xhr = new XMLHttpRequest();
-    xhr.open('POST', 'https://api.apigw.smt.docomo.ne.jp/voiceText/v1/textToSpeech?APIKEY=5752674b416c785153724e364f564d697a73\
-64715a31366e4c694d4b6a5379306c33357a30556a4f466131', true);
-
+    xhr.open('POST', 'https://api.apigw.smt.docomo.ne.jp/voiceText/v1/textToSpeech?APIKEY=5752674b416c785153724e364f564d697a7364715a31366e4c694d4b6a5379306c33357a30556a4f466131', true);
     xhr.responseType = 'arraybuffer'
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
     var datax = "text=ちょっと元気がありませんね 当たってますか&speaker=hikari&emotion=happiness&emotion_level=2&format=ogg";
-
     xhr.onload = function (e) {
         if( this.status == 200){
             view = new Uint8Array(this.response);
@@ -145,14 +122,10 @@ jQuery(function($) {
     data = datax;
     xhr.send(data);
 });
-
 function sound(){
     alert("start");
     audio.play();
 }
-
-
-
 
 $(function(){
     $("#button").click( function(){
@@ -166,7 +139,7 @@ $(function(){
 
         $.ajax({
             type : 'post',
-            url : "http://shower.human.waseda.ac.jp:9990/subfomation",
+            url : "http://shower.human.waseda.ac.jp:9989/subfomation",
             data : JSON.stringify(JSONdata),
             contenttype : 'application/JSON',
             datatype : 'json',
@@ -187,7 +160,6 @@ $(function(){
     })
 })
 
-
 navigator.getUserMedia = 
     navigator.getUserMedia ||
     navigator.webkitGetUserMedia ||
@@ -201,8 +173,7 @@ window.URL =
 window.AudioContext = 
     window.AudioContext||
     window.webkitAudioContext;
-
-   
+ 
     window.Recorder = function(audioContext, bufferSize){
     var o = this;
     o.audioContext = audioContext;
@@ -306,7 +277,7 @@ el.stop.addEventListener('click', function(){
 <!--
     //upload link
     var oReq = new XMLHttpRequest();
-    //var url = "http://shower.human.waseda.ac.jp:9998/receiver?username=sugaya";
+    //var url = "http://shower.human.waseda.ac.jp:9989/receiver?username=sugaya";
     var url = "http://shower.human.waseda.ac.jp/Tpis_System/save";
     oReq.open("POST", url, true);
     oReq.onload = function (oEvent) {
@@ -315,7 +286,6 @@ el.stop.addEventListener('click', function(){
 -->
 });
   
-
 el.play.addEventListener('click', function(){
     //play
     var src = audioContext.createBufferSource();
@@ -323,7 +293,6 @@ el.play.addEventListener('click', function(){
     src.connect(audioContext.destination);
     src.start()
 });
-
 
 var encodeWAV = function(samples, sampleRate) {
     var buffer = new ArrayBuffer(44 + samples.length * 2);
@@ -380,7 +349,7 @@ el.send.addEventListener('click', function(){
     //src.start()
     //upload link
     var oReq = new XMLHttpRequest();
-    var url = "http://shower.human.waseda.ac.jp:9990/saveWav";
+    var url = "http://shower.human.waseda.ac.jp:9989/saveWav";
     oReq.open("POST", url, false);
     oReq.setRequestHeader("Content-Type","audio/x-wav");
     oReq.onload = function (oEvent) {
@@ -393,7 +362,7 @@ el.send.addEventListener('click', function(){
     console.log(JSON.parse(oReq.responseText));
     // get 活性度
 <!--
-    $.getJSON("http://shower.human.waseda.ac.jp:9990/saveWav", function(){
+    $.getJSON("http://shower.human.waseda.ac.jp:9989/saveWav", function(){
     });
 -->
 <!--
@@ -404,14 +373,12 @@ el.send.addEventListener('click', function(){
                 console.log(this.response)
         }
     }
-    xmlHttpRequest.open( 'GET', 'http://shower.human.waseda.ac.jp:9990/saveWav', true );
+    xmlHttpRequest.open( 'GET', 'http://shower.human.waseda.ac.jp:9989/saveWav', true );
     xmlHttpRequest.responseType = 'json';
     xmlHttpRequest.send( null );
 -->
     console.log("活性度!");
 });
-
-
   </script>
 </html>
 

@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-##インポート##                                                                                                                        
+##インポート##                                                                                                                
 import subprocess
 import numpy
 import struct
@@ -14,26 +13,17 @@ import csv
 import os
 import math
 
-
-
-
-
 def print_features(file):
     ##f０抽出##
     output = subprocess.check_output(['get_f0s',file])
-
     ##改行区切り##
     output = output.splitlines()
     ##float変換##
     output = map(float,output)
-    
     ##無音区間削除##
-    
-
     ##空要素削除##
     output = filter(lambda x:x!='',output)
     output = filter(lambda x:x != 0,output)
-
     if(output != []):
         ##各指標計算##
         a = numpy.array(output)
@@ -42,11 +32,10 @@ def print_features(file):
         d = a.size
         e = max(output)-min(output)
         print ",".join([str(max(output)),str(min(output)),str(e),str(b),str(c),str(d)])
-    return [max(output),min(output),e,b,c,d]
+    return[max(output),min(output),e,b,c,d]
 
 #print ["label","max","min","range","average","var","size"]
 
-"""
 files = [
 "/home/sugaya/public_html/wav/20151013223903.wav",
 "/home/sugaya/public_html/wav/20151013223913.wav",
@@ -290,18 +279,13 @@ files = [
 "/home/sugaya/public_html/wav/20151020234132.wav"]
  
 feature_table = []
-"""
-
 
 """
 for file in files:
     print_features(file,"general")
-    
 
 FILE ='general_model.csv'
-
 f = open(FILE,'wb')
-
 writecsv = csv.writer(f,lineterminator='\n')
 writecsv.writerow(["label","max","min","range","average","var","size"])
 
