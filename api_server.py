@@ -62,8 +62,7 @@ def saveWav():
     with open(target_path, mode = 'w') as fh:
         fh.write(str(request.body.read()))
         r = HTTPResponse(status=200, body="OK")
-        r.set_header('Content-Type', 'text/plain')
-        
+        r.set_header('Content-Type', 'text/plain')        
     print "saved "+target_path+" !!"
     
     #活性度推定
@@ -71,6 +70,13 @@ def saveWav():
     body = json.dumps(result)
     rr = HTTPResponse(status=200, body=body)
     rr.set_header('Content-Type', 'application/json')
+    
+    #MongoDBに推定結果インサート
+    """
+    con = pymongo.MongoClient()
+    coll = con.test1.user
+    coll.insert_one(grade)
+    """
     return json.dumps("今")
     return "OK\r\n"
     

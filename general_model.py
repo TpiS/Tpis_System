@@ -31,10 +31,10 @@ def print_features(file):
         c = numpy.var(a)
         d = a.size
         e = max(output)-min(output)
+        print ["max","min","range","average","var","size"]
         print ",".join([str(max(output)),str(min(output)),str(e),str(b),str(c),str(d)])
     return[max(output),min(output),e,b,c,d]
 
-#print ["label","max","min","range","average","var","size"]
 
 files = [
 "/home/sugaya/public_html/wav/20151013223903.wav",

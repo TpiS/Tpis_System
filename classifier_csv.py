@@ -39,12 +39,15 @@ def classify(feature_list):
     grade3_score = grade3_model.score([feature_list])[0]
     grade4_score = grade4_model.score([feature_list])[0]
     grade5_score = grade5_model.score([feature_list])[0]
-    grade_score=[]
-    grade_score=[grade1_score,grade2_score,grade3_score,grade4_score,grade5_score]
+    grade_score = []
+    grade_score = [grade1_score,grade2_score,grade3_score,grade4_score,grade5_score]
     max(grade_score)
     for i in range(len(grade_score)):
-            if grade_score[i] == max(grade_score):
-                print "grade_score: %s" % i    
+        if grade_score[i] == max(grade_score):
+            print "grade_score: %s" % i    
+            grade_result = {'grade': i, 'score': grade_score[i]}
+            print(grade_result)
+        #return grade_result
     """
     if grade5_score >= grade4_score:
         return {"result" : "grade5",
@@ -67,9 +70,14 @@ def classify_by_file(filename):
     features = general_model.print_features(filename)
     #print features
     return classify(features)
+"""
+def send_json():
+    return classify()
+"""
 
 def sample_classify():
     return classify([1,2,3,4,5,6])
+
 def sample_classify_by_file():
     return classify_by_file("/home/sugaya/public_html/wav/20151013223903.wav")
 
