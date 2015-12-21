@@ -46,8 +46,7 @@ def classify(feature_list):
         if grade_score[i] == max(grade_score):
             print "grade_score: %s" % i    
             grade_result = {'grade': i, 'score': grade_score[i]}
-            print(grade_result)
-        #return grade_result
+            return grade_result
     """
     if grade5_score >= grade4_score:
         return {"result" : "grade5",

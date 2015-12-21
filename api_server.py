@@ -70,13 +70,11 @@ def saveWav():
     body = json.dumps(result)
     rr = HTTPResponse(status=200, body=body)
     rr.set_header('Content-Type', 'application/json')
-    
+    print result
     #MongoDBに推定結果インサート
-    """
     con = pymongo.MongoClient()
     coll = con.test1.user
-    coll.insert_one(grade)
-    """
+    coll.insert_one(result)
     return json.dumps("今")
     return "OK\r\n"
     
