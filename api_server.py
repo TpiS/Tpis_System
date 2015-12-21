@@ -8,7 +8,7 @@ import classifier as c
 import classifier_csv as cc
 import pymongo
 import urllib2
-
+import copy
 
 app = Bottle()
 @app.route('/receiver', method="POST")
@@ -71,12 +71,17 @@ def saveWav():
     rr = HTTPResponse(status=200, body=body)
     rr.set_header('Content-Type', 'application/json')
     print result
+    json_result = json.dumps(result)
+
     #MongoDBに推定結果インサート
+    result_for_mongo = copy.copy(result)
     con = pymongo.MongoClient()
     coll = con.test1.user
-    coll.insert_one(result)
-    return json.dumps("今")
-    return "OK\r\n"
+    coll.insert_one(result_for_mongo)
+
+    print json_result
+    return json.dumps(result)
+    #return "OK\r\n"
     
 
 @app.route('/subfomation', method=["OPTIONS","POST"])
