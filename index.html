@@ -139,7 +139,7 @@ $(function(){
 
         $.ajax({
             type : 'post',
-            url : "http://shower.human.waseda.ac.jp:9989/subfomation",
+            url : "http://shower.human.waseda.ac.jp:5299/subfomation",
             data : JSON.stringify(JSONdata),
             contenttype : 'application/JSON',
             datatype : 'json',
@@ -277,7 +277,7 @@ el.stop.addEventListener('click', function(){
 <!--
     //upload link
     var oReq = new XMLHttpRequest();
-    //var url = "http://shower.human.waseda.ac.jp:9989/receiver?username=sugaya";
+    //var url = "http://shower.human.waseda.ac.jp:5299/receiver?username=sugaya";
     var url = "http://shower.human.waseda.ac.jp/Tpis_System/save";
     oReq.open("POST", url, true);
     oReq.onload = function (oEvent) {
@@ -349,9 +349,11 @@ el.send.addEventListener('click', function(){
     //src.start()
     //upload link
     var oReq = new XMLHttpRequest();
-    var url = "http://shower.human.waseda.ac.jp:9989/saveWav";
+    var url = "http://shower.human.waseda.ac.jp:5299/saveWav";
     oReq.open("POST", url, false);
     oReq.setRequestHeader("Content-Type","audio/x-wav");
+    oReq.setRequestHeader("subject-id",$("#subject-id").val());
+    console.log($("#subject-id").val());
     oReq.onload = function (oEvent) {
     // Uploaded.
     };
@@ -359,10 +361,16 @@ el.send.addEventListener('click', function(){
     var audioBlob = new Blob([dataview], { type: 'audio/wav' });
     oReq.send(audioBlob);
     console.log("WAV was sent to "+url+" !!");
+<!--
     console.log(JSON.parse(oReq.responseText));
+--> 
+   var grade = JSON.parse(oReq.responseText);
+    for(key in grade){
+        alert(key+":"+grade[key]);
+    }
     // get 活性度
 <!--
-    $.getJSON("http://shower.human.waseda.ac.jp:9989/saveWav", function(){
+    $.getJSON("http://shower.human.waseda.ac.jp:5299/saveWav", function(){
     });
 -->
 <!--
@@ -373,7 +381,7 @@ el.send.addEventListener('click', function(){
                 console.log(this.response)
         }
     }
-    xmlHttpRequest.open( 'GET', 'http://shower.human.waseda.ac.jp:9989/saveWav', true );
+    xmlHttpRequest.open( 'GET', 'http://shower.human.waseda.ac.jp:5299/saveWav', true );
     xmlHttpRequest.responseType = 'json';
     xmlHttpRequest.send( null );
 -->
