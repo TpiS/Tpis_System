@@ -139,7 +139,7 @@ $(function(){
 
         $.ajax({
             type : 'post',
-            url : "http://shower.human.waseda.ac.jp:5299/subfomation",
+            url : "http://shower.human.waseda.ac.jp:5298/subfomation",
             data : JSON.stringify(JSONdata),
             contenttype : 'application/JSON',
             datatype : 'json',
@@ -274,16 +274,6 @@ el.stop.addEventListener('click', function(){
     disabled(el.stop, true);
     disabled(el.play, false);
     disabled(el.send, false);
-<!--
-    //upload link
-    var oReq = new XMLHttpRequest();
-    //var url = "http://shower.human.waseda.ac.jp:5299/receiver?username=sugaya";
-    var url = "http://shower.human.waseda.ac.jp/Tpis_System/save";
-    oReq.open("POST", url, true);
-    oReq.onload = function (oEvent) {
-      // Uploaded. 
-    }; 
--->
 });
   
 el.play.addEventListener('click', function(){
@@ -349,7 +339,7 @@ el.send.addEventListener('click', function(){
     //src.start()
     //upload link
     var oReq = new XMLHttpRequest();
-    var url = "http://shower.human.waseda.ac.jp:5299/saveWav";
+    var url = "http://shower.human.waseda.ac.jp:5298/saveWav";
     oReq.open("POST", url, false);
     oReq.setRequestHeader("Content-Type","audio/x-wav");
     oReq.setRequestHeader("subject-id",$("#subject-id").val());
@@ -361,29 +351,22 @@ el.send.addEventListener('click', function(){
     var audioBlob = new Blob([dataview], { type: 'audio/wav' });
     oReq.send(audioBlob);
     console.log("WAV was sent to "+url+" !!");
-<!--
     console.log(JSON.parse(oReq.responseText));
---> 
-   var grade = JSON.parse(oReq.responseText);
+
+    var output = JSON.parse(oReq.responseText);
+    console.log(output);
+    console.log('feature_list' in output);
+    arr = output.slice(0,2);
+    console.log(arr);
     for(key in grade){
         alert(key+":"+grade[key]);
+        alert(grade_result.push(grade[key].subject-name));
     }
-    // get 活性度
 <!--
-    $.getJSON("http://shower.human.waseda.ac.jp:5299/saveWav", function(){
+    var grade_subject = grade.filter(function(item, index){
+        if ((item.subject-id) == '5296') return true;
     });
--->
-<!--
-    var xmlHttpRequest = new XMLHttpRequest();
-    xmlHttpRequest.onreadystatechange = function(){
-        if( this.readyState == 4 && this.status == 200 )
-            if( this.response ){
-                console.log(this.response)
-        }
-    }
-    xmlHttpRequest.open( 'GET', 'http://shower.human.waseda.ac.jp:5299/saveWav', true );
-    xmlHttpRequest.responseType = 'json';
-    xmlHttpRequest.send( null );
+    console.log(grade_subject);
 -->
 });
   </script>

@@ -10,6 +10,8 @@ import pymongo
 import urllib2
 import copy
 from bson.objectid import ObjectId
+from bson import json_util
+
 app = Bottle()
 @app.route('/receiver', method="POST")
 def receiver():
@@ -39,7 +41,6 @@ def receiver():
         return r
     elif content_type  == 'text/plain': #音声認識結果が与えられた場合
         target_path = "/".join([dir, "text", speaker+tstr+str(id)+".rcg"])
-
         with open(target_path, mode = 'w') as fh:
             fh.write(str(request.body.read()))
     return "OK\r\n"
@@ -77,21 +78,20 @@ def saveWav():
     rr.set_header('Content-Type', 'application/json')
     print result
     
-
     #MongoDBに特徴量・推定結果挿入
     result_for_mongo = copy.copy(result)
     con = pymongo.MongoClient()
     coll = con.test1.user
     post_id = coll.insert(result_for_mongo)
     print(post_id)
-        
-    #MongoDBから挿入したドキュメントを取得
+
+    #MongoDBから挿入したドキュメントを取得                                                                                   
     user_data = coll.find_one({"_id":ObjectId(post_id)})
     print user_data
-
-    return json.dumps(user_data)
-    #return "OK\r\n"
     
+    #ブラウザにjsonデータを返答
+    return json.dumps(user_data, sort_keys=True, default=json_util.default)
+
 
 @app.route('/subfomation', method=["OPTIONS","POST"])
 def subfomation():
@@ -107,4 +107,4 @@ def subfomation():
     for doc in coll.find():
         print(doc)
     """
-run(app,host='0.0.0.0', port=5299, debug=True, reloader=True)
+run(app,host='0.0.0.0', port=5298, debug=True, reloader=True)
