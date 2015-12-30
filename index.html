@@ -81,7 +81,13 @@
 	<button class="rec">REC</button>
 	<button class="stop" disabled="true">STOP</button>
 	<button class="play" disabled="true">PLAY</button>
-	<a onClick="sound()"><button id="send" disabled="true">SEND</button></a>
+	<!--
+        <a onClick="sound()">
+        -->
+        <button id="send" disabled="true">SEND</button>
+        <!--
+        </a>
+        -->
     <br>
     <br>
       <div class="yes-no">
@@ -102,7 +108,7 @@
        <p><button id="button" type="button">送信</button></p>
   </body>
   <script type="text/javascript">
-
+<!--
 jQuery(function($) {
     xhr = new XMLHttpRequest();
     xhr.open('POST', 'https://api.apigw.smt.docomo.ne.jp/voiceText/v1/textToSpeech?APIKEY=5752674b416c785153724e364f564d697a7364715a31366e4c694d4b6a5379306c33357a30556a4f466131', true);
@@ -126,7 +132,7 @@ function sound(){
     alert("start");
     audio.play();
 }
-
+-->
 $(function(){
     $("#button").click( function(){
             var JSONdata = {
@@ -356,8 +362,44 @@ el.send.addEventListener('click', function(){
     var output = JSON.parse(oReq.responseText);
     console.log(output);
     console.log('feature_list' in output);
-    arr = output.slice(0,2);
-    console.log(arr);
+    var output_result = output["result"]["grade"];
+    console.log(output_result);
+    
+    if(output_result == 0){
+        console.log("かなり元気がありませんね");
+        jQuery(function($) {
+            xhr = new XMLHttpRequest();
+            xhr.open('POST', 'https://api.apigw.smt.docomo.ne.jp/voiceText/v1/textToSpeech?APIKEY=5752674b416c785153724e364f564d697a7364715a31366e4c694d4b6a5379306c33357a30556a4f466131', true);
+            xhr.responseType = 'arraybuffer'
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
+            var datax = "text=かなり元気がありませんね 当たってますか&speaker=hikari&emotion=happiness&emotion_level=2&format=ogg";
+    　　　　xhr.onload = function (e) {
+        　　　　if( this.status == 200){
+            　　　　view = new Uint8Array(this.response);
+            　　　　blob = new Blob([view], { "type" : "audio/x-wav" });
+            　　　　URL = window.URL || window.webkitURL;
+
+            　　　　audio = new Audio(URL.createObjectURL(blob));
+            　　　　//audio.play();
+        　　　　}
+    　　　　};
+    　　　　data = datax;
+    　　　　xhr.send(data);
+　　　　});
+　　　　function sound(){
+    　　　　alert("start");
+    　　　　audio.play();
+　　　　}
+    } else if(output_result == 1){
+        console.log("ちょっと元気がありませんね");
+　　} else if(output_result == 2){
+	console.log("どちらでもありませんね");
+    } else if(output_result == 3){
+        console.log("ちょっと元気ですね");
+    } else if(output_result == 4){
+        console.log("かなり元気ですね");
+　　}
+
     for(key in grade){
         alert(key+":"+grade[key]);
         alert(grade_result.push(grade[key].subject-name));
