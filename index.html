@@ -81,13 +81,10 @@
 	<button class="rec">REC</button>
 	<button class="stop" disabled="true">STOP</button>
 	<button class="play" disabled="true">PLAY</button>
-	<!--
+
         <a onClick="sound()">
-        -->
         <button id="send" disabled="true">SEND</button>
-        <!--
         </a>
-        -->
     <br>
     <br>
       <div class="yes-no">
@@ -364,7 +361,31 @@ el.send.addEventListener('click', function(){
     console.log('feature_list' in output);
     var output_result = output["result"]["grade"];
     console.log(output_result);
+    var output_object = output["_id"]["$oid"];
+    console.log(output_object);    
     
+    $.ajax({
+            type : 'post',
+            url : "http://shower.human.waseda.ac.jp:5298/result_mongo/",
+            data : output,
+            contenttype : 'application/JSON',
+            datatype : 'json',
+            scripttharset : 'utf-8',
+            success : function(data){
+
+                // Succeess
+                alert("success");
+                alert(output);
+            },
+            error : function(data) {
+
+                //Error
+                alert("error");
+                alert(output);
+            }
+    });
+
+
     if(output_result == 0){
         console.log("かなり元気がありませんね");
         jQuery(function($) {
@@ -404,12 +425,7 @@ el.send.addEventListener('click', function(){
         alert(key+":"+grade[key]);
         alert(grade_result.push(grade[key].subject-name));
     }
-<!--
-    var grade_subject = grade.filter(function(item, index){
-        if ((item.subject-id) == '5296') return true;
-    });
-    console.log(grade_subject);
--->
+
 });
   </script>
 </html>

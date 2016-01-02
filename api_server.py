@@ -81,7 +81,7 @@ def saveWav():
     #MongoDBに特徴量・推定結果挿入
     result_for_mongo = copy.copy(result)
     con = pymongo.MongoClient()
-    coll = con.test1.user
+    coll = con.user_db.feature_result
     post_id = coll.insert(result_for_mongo)
     print(post_id)
 
@@ -107,4 +107,17 @@ def subfomation():
     for doc in coll.find():
         print(doc)
     """
+
+@app.route('/result_mongo', method=["OPTIONS","POST"])
+def result_mongo():
+    print("result_mongo")
+    #JSONデータブラウザから取得
+    browser_result = json.loads(str(request.body.read()))
+    print browser_result
+    #objectId照合用にデータ挿入
+    con = pymongo.MongoClient()
+    coll = con.user_db.objectVerification
+    coll.insert_one(browser_result)
+
+
 run(app,host='0.0.0.0', port=5298, debug=True, reloader=True)
