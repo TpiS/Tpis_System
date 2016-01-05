@@ -69,7 +69,18 @@ def saveWav():
         r.set_header('Content-Type', 'text/plain')        
     print "saved "+target_path+" !!"
     
+    
+    #保存するMongoDB
+    con = pymongo.MongoClient()
+    coll = con.user_db.feature_result
     #活性度推定
+    doc = coll.find({u'subject-id':subjectid})
+    if doc.count() < 8: #ユーザデータが８個未満の場合
+        print "a"
+        print(doc.count())
+    elif doc.count() >= 8: #ユーザデータが8個以上の場合
+        print "b"
+        print(doc.count())
     feature_list, classification_result = cc.classify_by_file(target_path)
     result = {"feature_list": feature_list, "result": classification_result, "subject-id": subjectid}
     
@@ -80,8 +91,6 @@ def saveWav():
     
     #MongoDBに特徴量・推定結果挿入
     result_for_mongo = copy.copy(result)
-    con = pymongo.MongoClient()
-    coll = con.user_db.feature_result
     post_id = coll.insert(result_for_mongo)
     print(post_id)
 
