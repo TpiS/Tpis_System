@@ -6,6 +6,7 @@ import datetime
 from StringIO import StringIO
 import classifier as c
 import classifier_csv as cc
+import classifier_mongo
 import pymongo
 import urllib2
 import copy
@@ -75,32 +76,30 @@ def saveWav():
     coll = con.user_db.feature_result
     #活性度推定
     doc = coll.find({u'subject-id':subjectid})
-    if doc.count() < 8: #ユーザデータが８個未満の場合
-        print "a"
-        print(doc.count())
-    elif doc.count() >= 8: #ユーザデータが8個以上の場合
-        print "b"
-        print(doc.count())
-    feature_list, classification_result = cc.classify_by_file(target_path)
-    result = {"feature_list": feature_list, "result": classification_result, "subject-id": subjectid}
+    dialogue_times = doc.count()
+    if dialogue_times < 8: #ユーザデータが８個未満の場合
+        print "Dialogue_times: "+str(dialogue_times)+"times"
+        feature_list, classification_result = cc.classify_by_file(target_path)
+        result = {"feature_list": feature_list, "result": classification_result, "subject-id": subjectid}
     
-    body = json.dumps(result)
-    rr = HTTPResponse(status=200, body=body)
-    rr.set_header('Content-Type', 'application/json')
-    print result
+        body = json.dumps(result)
+        rr = HTTPResponse(status=200, body=body)
+        rr.set_header('Content-Type', 'application/json')
+        print result
     
-    #MongoDBに特徴量・推定結果挿入
-    result_for_mongo = copy.copy(result)
-    post_id = coll.insert(result_for_mongo)
-    print(post_id)
+        #MongoDBに特徴量・推定結果挿入
+        result_for_mongo = copy.copy(result)
+        post_id = coll.insert(result_for_mongo)
+        print(post_id)
+        #MongoDBから挿入したドキュメントを取得                                                       
+        user_data = coll.find_one({"_id":ObjectId(post_id)})
+        print user_data
+        #ブラウザにjsonデータを返答
+        return json.dumps(user_data, sort_keys=True, default=json_util.default)
 
-    #MongoDBから挿入したドキュメントを取得                                                                                   
-    user_data = coll.find_one({"_id":ObjectId(post_id)})
-    print user_data
-    
-    #ブラウザにjsonデータを返答
-    return json.dumps(user_data, sort_keys=True, default=json_util.default)
-
+    elif dialogue_times >= 8: #ユーザデータが8個以上の場合
+        print "Dialogue_times "+str(dialogue_times)+"times"
+        
 
 @app.route('/subfomation', method=["OPTIONS","POST"])
 def subfomation():
