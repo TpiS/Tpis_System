@@ -6,6 +6,7 @@ import datetime
 from StringIO import StringIO
 import classifier as c
 import classifier_csv as cc
+import classifier_mongo as cm
 import classifier_mongo
 import pymongo
 import urllib2
@@ -81,12 +82,10 @@ def saveWav():
         print "Dialogue_times: "+str(dialogue_times)+"times"
         feature_list, classification_result = cc.classify_by_file(target_path)
         result = {"feature_list": feature_list, "result": classification_result, "subject-id": subjectid}
-    
         body = json.dumps(result)
         rr = HTTPResponse(status=200, body=body)
         rr.set_header('Content-Type', 'application/json')
-        print result
-    
+        print result    
         #MongoDBに特徴量・推定結果挿入
         result_for_mongo = copy.copy(result)
         post_id = coll.insert(result_for_mongo)
@@ -97,9 +96,26 @@ def saveWav():
         #ブラウザにjsonデータを返答
         return json.dumps(user_data, sort_keys=True, default=json_util.default)
 
+
     elif dialogue_times >= 8: #ユーザデータが8個以上の場合
         print "Dialogue_times "+str(dialogue_times)+"times"
-        
+        feature_list, classification_result = cm.classify_by_file(target_path)
+        result = {"feature_list": feature_list, "result": classification_result, "subject-id": subjectid}
+        body = json.dumps(result)
+        rr = HTTPResponse(status=200, body=body)
+        rr.set_header('Content-Type', 'application/json')
+        print result
+        #MongoDBに特徴量・推定結果挿入                                                                  
+        result_for_mongo = copy.copy(result)
+        post_id = coll.insert(result_for_mongo)
+        print(post_id)
+        #MongoDBから挿入したドキュメントを取得                                                          
+        user_data = coll.find_one({"_id":ObjectId(post_id)})
+        print user_data
+        #ブラウザにjsonデータを返答                                                                     
+        return json.dumps(user_data, sort_keys=True, default=json_util.default)
+
+
 
 @app.route('/subfomation', method=["OPTIONS","POST"])
 def subfomation():
@@ -128,4 +144,4 @@ def result_mongo():
     coll.insert_one(browser_result)
 
 
-run(app,host='0.0.0.0', port=5298, debug=True, reloader=True)
+run(app,host='0.0.0.0', port=5297, debug=True, reloader=True)
