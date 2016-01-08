@@ -99,7 +99,7 @@ def saveWav():
 
     elif dialogue_times >= 8: #ユーザデータが8個以上の場合
         print "Dialogue_times "+str(dialogue_times)+"times"
-        feature_list, classification_result = cm.classify_by_file(target_path)
+        feature_list, classification_result = cm.classify_by_individual(target_path,subjectid)
         result = {"feature_list": feature_list, "result": classification_result, "subject-id": subjectid}
         body = json.dumps(result)
         rr = HTTPResponse(status=200, body=body)
@@ -144,4 +144,4 @@ def result_mongo():
     coll.insert_one(browser_result)
 
 
-run(app,host='0.0.0.0', port=5297, debug=True, reloader=True)
+run(app,host='0.0.0.0', port=5295, debug=True, reloader=True)

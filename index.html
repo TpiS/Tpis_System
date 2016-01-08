@@ -142,7 +142,7 @@ $(function(){
 
         $.ajax({
             type : 'post',
-            url : "http://shower.human.waseda.ac.jp:5297/subfomation",
+            url : "http://shower.human.waseda.ac.jp:5295/subfomation",
             data : JSON.stringify(JSONdata),
             contenttype : 'application/JSON',
             datatype : 'json',
@@ -342,7 +342,7 @@ el.send.addEventListener('click', function(){
     //src.start()
     //upload link
     var oReq = new XMLHttpRequest();
-    var url = "http://shower.human.waseda.ac.jp:5297/saveWav";
+    var url = "http://shower.human.waseda.ac.jp:5295/saveWav";
     oReq.open("POST", url, false);
     oReq.setRequestHeader("Content-Type","audio/x-wav");
     oReq.setRequestHeader("subject-id",$("#subject-id").val());
@@ -364,7 +364,7 @@ el.send.addEventListener('click', function(){
     
     $.ajax({
             type : 'post',
-            url : "http://shower.human.waseda.ac.jp:5297/result_mongo/",
+            url : "http://shower.human.waseda.ac.jp:5295/result_mongo/",
             data : output,
             contenttype : 'application/JSON',
             datatype : 'json',
