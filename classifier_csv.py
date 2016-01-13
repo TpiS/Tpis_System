@@ -17,19 +17,19 @@ grade4 = np.array(filter(lambda x: int(x[0]) == 4,data))
 grade5 = np.array(filter(lambda x: int(x[0]) == 5,data))
 
 ###   活性度1モデル   ###
-grade1_model = mixture.GMM(n_components=5, covariance_type='full')
+grade1_model = mixture.GMM(n_components=1, covariance_type='full')
 grade1_model.fit(grade1[:,1:])
 ###   活性度2モデル   ###
-grade2_model = mixture.GMM(n_components=5, covariance_type='full')
+grade2_model = mixture.GMM(n_components=1, covariance_type='full')
 grade2_model.fit(grade2[:,1:])
 ###   活性度3モデル   ###                                                                                                    
-grade3_model = mixture.GMM(n_components=5, covariance_type='full')
+grade3_model = mixture.GMM(n_components=1, covariance_type='full')
 grade3_model.fit(grade3[:,1:])
 ###   活性度4モデル   ###                                                                                                     
-grade4_model = mixture.GMM(n_components=5, covariance_type='full')
+grade4_model = mixture.GMM(n_components=1, covariance_type='full')
 grade4_model.fit(grade4[:,1:])
 ###   活性度5モデル   ###                                                                                                    
-grade5_model = mixture.GMM(n_components=5, covariance_type='full')
+grade5_model = mixture.GMM(n_components=1, covariance_type='full')
 grade5_model.fit(grade5[:,1:])
 
 ### 分類 ###
